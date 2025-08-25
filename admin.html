@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin • Yacht Week</title>
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand">
+        <span class="brand-logo">⚙️</span>
+        <span class="brand-name">Admin</span>
+      </div>
+      <nav class="nav">
+        <a class="nav-link" href="./index.html">Public site</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container admin">
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="weeks">Weeks</button>
+      <button class="tab-btn" data-tab="locations">Locations</button>
+      <button class="tab-btn" data-tab="yachts">Yachts</button>
+      <button class="tab-btn" data-tab="bookings">Bookings</button>
+      <button class="tab-btn" data-tab="settings">Settings</button>
+    </div>
+
+    <section id="tab-weeks" class="tab-panel active">
+      <h2>Weeks</h2>
+      <form id="weekForm" class="form inline">
+        <input type="hidden" id="weekId">
+        <div class="form-row">
+          <label for="weekNumber">Week number</label>
+          <input id="weekNumber" type="number" min="1" max="53" required>
+        </div>
+        <div class="form-row">
+          <label for="weekStart">Start date (Saturday)</label>
+          <input id="weekStart" type="date" required>
+        </div>
+        <div class="form-row">
+          <label for="weekEnd">End date (Saturday)</label>
+          <input id="weekEnd" type="date" required>
+        </div>
+        <div class="form-actions">
+          <button type="reset" class="btn">Clear</button>
+          <button type="submit" class="btn primary">Save week</button>
+        </div>
+      </form>
+      <div class="list" id="weeksList"></div>
+    </section>
+
+    <section id="tab-locations" class="tab-panel">
+      <h2>Locations</h2>
+      <form id="locationForm" class="form inline">
+        <input type="hidden" id="locationId">
+        <div class="form-row">
+          <label for="locationName">Name</label>
+          <input id="locationName" type="text" required placeholder="Split, Croatia">
+        </div>
+        <div class="form-row">
+          <label for="locationCode">Code</label>
+          <input id="locationCode" type="text" required placeholder="SPU">
+        </div>
+        <div class="form-row">
+          <label for="locationWeeks">Available weeks</label>
+          <select id="locationWeeks" multiple></select>
+          <small class="muted">Hold Ctrl/Cmd to select multiple</small>
+        </div>
+        <div class="form-actions">
+          <button type="reset" class="btn">Clear</button>
+          <button type="submit" class="btn primary">Save location</button>
+        </div>
+      </form>
+      <div class="list" id="locationsList"></div>
+    </section>
+
+    <section id="tab-yachts" class="tab-panel">
+      <h2>Yachts</h2>
+      <form id="yachtForm" class="form">
+        <input type="hidden" id="yachtId">
+        <div class="grid-2">
+          <div class="form-row">
+            <label for="yachtName">Name</label>
+            <input id="yachtName" type="text" required placeholder="Lagoon 42">
+          </div>
+          <div class="form-row">
+            <label for="yachtYear">Year</label>
+            <input id="yachtYear" type="number" min="1990" max="2100" required value="2020">
+          </div>
+          <div class="form-row">
+            <label for="yachtLength">Length (m)</label>
+            <input id="yachtLength" type="number" step="0.1" required value="12.8">
+          </div>
+          <div class="form-row">
+            <label for="yachtCabins">Cabins</label>
+            <input id="yachtCabins" type="number" min="1" required value="4">
+          </div>
+          <div class="form-row">
+            <label for="yachtBerths">Berths</label>
+            <input id="yachtBerths" type="number" min="1" required value="8">
+          </div>
+          <div class="form-row">
+            <label for="yachtPrice">Price / week</label>
+            <input id="yachtPrice" type="number" min="0" step="0.01" required value="4500">
+          </div>
+        </div>
+        <div class="form-row">
+          <label for="yachtImage">Image URL</label>
+          <input id="yachtImage" type="url" placeholder="https://...">
+        </div>
+        <div class="form-row">
+          <label for="yachtDescription">Description</label>
+          <textarea id="yachtDescription" rows="3" placeholder="Comfortable catamaran with spacious deck"></textarea>
+        </div>
+        <div class="grid-2">
+          <div class="form-row">
+            <label for="availabilityLocation">Availability: Location</label>
+            <select id="availabilityLocation"></select>
+          </div>
+          <div class="form-row">
+            <label for="availabilityWeeks">Availability: Weeks</label>
+            <select id="availabilityWeeks" multiple></select>
+            <small class="muted">Select weeks for the chosen location</small>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" id="addAvailabilityBtn" class="btn">Add availability</button>
+          <button type="reset" class="btn">Clear</button>
+          <button type="submit" class="btn primary">Save yacht</button>
+        </div>
+      </form>
+      <div id="yachtAvailabilityList" class="chips"></div>
+      <div class="list" id="yachtsList"></div>
+    </section>
+
+    <section id="tab-bookings" class="tab-panel">
+      <h2>Bookings</h2>
+      <div class="filters inline">
+        <div class="filter-group">
+          <label for="bookingStatusFilter">Status</label>
+          <select id="bookingStatusFilter">
+            <option value="">All</option>
+            <option value="pending_payment">Pending payment</option>
+            <option value="paid">Paid</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+      </div>
+      <div class="list" id="bookingsList"></div>
+    </section>
+
+    <section id="tab-settings" class="tab-panel">
+      <h2>Settings</h2>
+      <form id="settingsForm" class="form inline">
+        <div class="form-row">
+          <label for="currencySymbol">Currency symbol</label>
+          <input id="currencySymbol" type="text" maxlength="3" placeholder="$">
+        </div>
+        <div class="form-row">
+          <label for="stripePaymentLink">Stripe Payment Link URL</label>
+          <input id="stripePaymentLink" type="url" placeholder="https://buy.stripe.com/...">
+          <small class="muted">Create a Payment Link in Stripe and paste the URL here.</small>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn primary">Save</button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>© <span id="year"></span> Yacht Week • Admin</div>
+    </div>
+  </footer>
+
+  <script src="./storage.js"></script>
+  <script src="./admin.js"></script>
+</body>
+</html>
+
